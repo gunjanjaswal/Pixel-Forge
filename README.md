@@ -115,6 +115,12 @@ Serving is **off until you switch it on**. When it is on, any `<img>` that has a
 
 The browser downloads the first format it can decode and falls back to the original `<img>` otherwise. If a sibling file does not exist, no `<source>` is added, so a missing file can never break a page. It applies to post content, featured images, and attachment images.
 
+## Screenshot
+
+<p align="center">
+  <img src=".wordpress-org/screenshot-1.png" alt="The Pixel Forge screen: status cards, settings, and the conversion controls" width="760">
+</p>
+
 ## Installation
 
 ### From your dashboard
