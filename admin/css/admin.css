@@ -73,3 +73,16 @@
 	margin-left: 10px;
 	color: #1a7a34;
 }
+
+.column-pixelforge {
+	width: 16%;
+}
+
+.pf-done {
+	color: #1a7a34;
+	font-weight: 500;
+}
+
+.pf-cell a {
+	text-decoration: none;
+}

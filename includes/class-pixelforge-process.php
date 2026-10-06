@@ -22,6 +22,8 @@ class PixelForge_Process {
 		add_action( 'wp_ajax_pixelforge_save_settings', array( __CLASS__, 'ajax_save_settings' ) );
 		add_action( 'wp_ajax_pixelforge_convert_batch', array( __CLASS__, 'ajax_convert_batch' ) );
 		add_action( 'wp_ajax_pixelforge_rollback_batch', array( __CLASS__, 'ajax_rollback_batch' ) );
+		add_action( 'wp_ajax_pixelforge_convert_one', array( __CLASS__, 'ajax_convert_one' ) );
+		add_action( 'wp_ajax_pixelforge_remove_one', array( __CLASS__, 'ajax_remove_one' ) );
 	}
 
 	/**
@@ -339,6 +341,85 @@ class PixelForge_Process {
 				'remaining' => $remaining,
 				'pending'   => self::count_pending(),
 				'done'      => self::count_done(),
+			)
+		);
+	}
+
+	/**
+	 * AJAX: convert a single attachment from the Media Library.
+	 */
+	public static function ajax_convert_one() {
+		self::guard();
+
+		$id = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified in guard().
+		if ( ! $id || ! in_array( get_post_mime_type( $id ), self::source_mimes(), true ) ) {
+			wp_send_json_error( array( 'message' => __( 'That is not a convertible image.', 'pixel-forge' ) ) );
+		}
+
+		$settings = self::get_settings();
+		if ( empty( $settings['formats'] ) ) {
+			wp_send_json_error( array( 'message' => __( 'Choose at least one format in the Pixel Forge settings first.', 'pixel-forge' ) ) );
+		}
+
+		$was_done = (bool) get_post_meta( $id, PixelForge_Converter::DONE_META, true );
+		$res      = PixelForge_Converter::convert_attachment( $id, $settings['formats'], $settings['quality'] );
+
+		$stats = self::get_stats();
+		if ( ! $was_done ) {
+			$stats['images'] += 1;
+		}
+		$stats['files']        += count( $res['created'] );
+		$stats['bytes_source'] += $res['bytes_source'];
+		$stats['bytes_webp']   += $res['bytes_webp'];
+		$stats['bytes_avif']   += $res['bytes_avif'];
+		update_option( self::STATS, $stats );
+
+		wp_send_json_success(
+			array(
+				'html'    => PixelForge_Admin::render_media_cell( $id ),
+				'stats'   => $stats,
+				'pending' => self::count_pending(),
+				'done'    => self::count_done(),
+				'errors'  => $res['errors'],
+			)
+		);
+	}
+
+	/**
+	 * AJAX: remove the generated files for a single attachment.
+	 */
+	public static function ajax_remove_one() {
+		self::guard();
+
+		$id = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified in guard().
+		if ( ! $id ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid image.', 'pixel-forge' ) ) );
+		}
+
+		$bytes    = get_post_meta( $id, PixelForge_Converter::BYTES_META, true );
+		$files    = (array) get_post_meta( $id, PixelForge_Converter::FILES_META, true );
+		$was_done = (bool) get_post_meta( $id, PixelForge_Converter::DONE_META, true );
+
+		PixelForge_Converter::remove_attachment( $id );
+
+		$stats = self::get_stats();
+		if ( $was_done ) {
+			$stats['images'] = max( 0, $stats['images'] - 1 );
+		}
+		$stats['files'] = max( 0, $stats['files'] - count( $files ) );
+		if ( is_array( $bytes ) ) {
+			$stats['bytes_source'] = max( 0, $stats['bytes_source'] - ( isset( $bytes['source'] ) ? (int) $bytes['source'] : 0 ) );
+			$stats['bytes_webp']   = max( 0, $stats['bytes_webp'] - ( isset( $bytes['webp'] ) ? (int) $bytes['webp'] : 0 ) );
+			$stats['bytes_avif']   = max( 0, $stats['bytes_avif'] - ( isset( $bytes['avif'] ) ? (int) $bytes['avif'] : 0 ) );
+		}
+		update_option( self::STATS, $stats );
+
+		wp_send_json_success(
+			array(
+				'html'    => PixelForge_Admin::render_media_cell( $id ),
+				'stats'   => $stats,
+				'pending' => self::count_pending(),
+				'done'    => self::count_done(),
 			)
 		);
 	}

@@ -17,13 +17,21 @@ Pixel Forge converts the images already in your media library to WebP and AVIF, 
 
 When you want the next-gen files gone, one click removes all of them and leaves your originals untouched. Nothing about the process is destructive.
 
+**What makes it different**
+
+Most converters in this space hand the work to a paid external service and your images leave your server. Pixel Forge does the opposite: everything runs locally through WordPress' own image engine, with no third-party service, no account, no API key, and no per-image credits. Nothing about an image ever leaves your site.
+
+It is also completely reversible. Originals are never modified or replaced, every generated file is recorded, and one click removes all of them. And you are not limited to a single bulk run: a Next-gen column in the Media Library shows each image's status and real savings, with Convert and Remove right there on the row.
+
 **What you get**
 
 * Bulk conversion of your whole library to WebP, AVIF, or both.
 * A live progress screen that converts in small batches, so large libraries do not time out.
+* A Next-gen column in the Media Library with per-image savings and one-click Convert or Remove.
 * A quality control, and automatic detection of which formats your server can create.
 * Optional front-end delivery: images are served inside a `<picture>` tag with the original as a fallback, so a missing file can never break a page.
 * One-click rollback that deletes every generated file and keeps your originals.
+* Fully local. No external services, no account, no data leaving your site.
 
 **How conversion works**
 
@@ -71,4 +79,4 @@ Open Media > Pixel Forge and use the Rollback section. It deletes every file the
 == Changelog ==
 
 = 1.0.0 =
-* First release: bulk WebP and AVIF conversion with a batched progress screen, quality control, optional `<picture>` serving, and one-click rollback.
+* First release: fully local bulk WebP and AVIF conversion with a batched progress screen, a Media Library column with per-image Convert/Remove, quality control, optional `<picture>` serving, and one-click rollback.

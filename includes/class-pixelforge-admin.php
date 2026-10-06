@@ -25,6 +25,8 @@ class PixelForge_Admin {
 		add_action( 'admin_menu', array( __CLASS__, 'add_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue' ) );
 		add_filter( 'plugin_action_links_' . PIXELFORGE_BASENAME, array( __CLASS__, 'action_links' ) );
+		add_filter( 'manage_media_columns', array( __CLASS__, 'media_column' ) );
+		add_action( 'manage_media_custom_column', array( __CLASS__, 'media_column_content' ), 10, 2 );
 	}
 
 	/**
@@ -47,6 +49,12 @@ class PixelForge_Admin {
 	 * @param string $hook Current admin page hook suffix.
 	 */
 	public static function enqueue( $hook ) {
+		if ( 'upload.php' === $hook ) {
+			if ( current_user_can( 'manage_options' ) ) {
+				self::enqueue_media();
+			}
+			return;
+		}
 		if ( $hook !== self::$hook ) {
 			return;
 		}
@@ -85,6 +93,120 @@ class PixelForge_Admin {
 				),
 			)
 		);
+	}
+
+	/**
+	 * Load the small script that powers the Media Library column actions.
+	 */
+	private static function enqueue_media() {
+		wp_enqueue_script(
+			'pixelforge-media',
+			PIXELFORGE_URL . 'admin/js/media.js',
+			array(),
+			PIXELFORGE_VERSION,
+			true
+		);
+		wp_localize_script(
+			'pixelforge-media',
+			'PixelForgeMedia',
+			array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'pixelforge' ),
+				'i18n'    => array(
+					'working' => __( 'Working…', 'pixel-forge' ),
+					'error'   => __( 'Failed. Please try again.', 'pixel-forge' ),
+					'confirm' => __( 'Remove the generated files for this image? The original is kept.', 'pixel-forge' ),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Add a "Next-gen" column to the Media Library list.
+	 *
+	 * @param array $columns Existing columns.
+	 * @return array
+	 */
+	public static function media_column( $columns ) {
+		$columns['pixelforge'] = __( 'Next-gen', 'pixel-forge' );
+		return $columns;
+	}
+
+	/**
+	 * Render the "Next-gen" column cell.
+	 *
+	 * @param string $column        Column name.
+	 * @param int    $attachment_id Attachment ID.
+	 */
+	public static function media_column_content( $column, $attachment_id ) {
+		if ( 'pixelforge' !== $column ) {
+			return;
+		}
+		$allowed = array(
+			'span' => array(
+				'class'   => array(),
+				'data-id' => array(),
+			),
+			'a'    => array(
+				'href'    => array(),
+				'class'   => array(),
+				'data-id' => array(),
+			),
+		);
+		echo wp_kses( self::render_media_cell( (int) $attachment_id ), $allowed );
+	}
+
+	/**
+	 * Build the HTML for one attachment's next-gen status.
+	 *
+	 * @param int $attachment_id Attachment ID.
+	 * @return string
+	 */
+	public static function render_media_cell( $attachment_id ) {
+		$id  = absint( $attachment_id );
+		$can = current_user_can( 'manage_options' );
+
+		if ( ! in_array( get_post_mime_type( $id ), PixelForge_Process::source_mimes(), true ) ) {
+			return '<span class="pf-cell" data-id="' . $id . '">&#8212;</span>';
+		}
+
+		$supported = PixelForge_Converter::supported_formats();
+		if ( ! $supported['webp'] && ! $supported['avif'] ) {
+			return '<span class="pf-cell" data-id="' . $id . '">&#8212;</span>';
+		}
+
+		$bytes = get_post_meta( $id, PixelForge_Converter::BYTES_META, true );
+		if ( is_array( $bytes ) && ! empty( $bytes['source'] ) ) {
+			$parts = array();
+			if ( ! empty( $bytes['webp'] ) ) {
+				$parts[] = 'WebP &#8722;' . self::pct( $bytes['source'], $bytes['webp'] ) . '%';
+			}
+			if ( ! empty( $bytes['avif'] ) ) {
+				$parts[] = 'AVIF &#8722;' . self::pct( $bytes['source'], $bytes['avif'] ) . '%';
+			}
+			$label  = empty( $parts ) ? esc_html__( 'Converted', 'pixel-forge' ) : implode( ', ', $parts );
+			$remove = $can ? ' <a href="#" class="pf-remove-one" data-id="' . $id . '">' . esc_html__( 'Remove', 'pixel-forge' ) . '</a>' : '';
+			return '<span class="pf-cell" data-id="' . $id . '"><span class="pf-done">' . $label . '</span>' . $remove . '</span>';
+		}
+
+		if ( ! $can ) {
+			return '<span class="pf-cell" data-id="' . $id . '">&#8212;</span>';
+		}
+
+		return '<span class="pf-cell" data-id="' . $id . '"><a href="#" class="pf-convert-one" data-id="' . $id . '">' . esc_html__( 'Convert', 'pixel-forge' ) . '</a></span>';
+	}
+
+	/**
+	 * Percentage smaller, floored at zero.
+	 *
+	 * @param int $source Original bytes.
+	 * @param int $out    Converted bytes.
+	 * @return int
+	 */
+	private static function pct( $source, $out ) {
+		$source = (int) $source;
+		$out    = (int) $out;
+		return $source > 0 ? (int) round( ( 1 - $out / $source ) * 100 ) : 0;
 	}
 
 	/**

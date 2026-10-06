@@ -48,12 +48,22 @@ WebP and AVIF are the modern image formats. At the same visual quality they are 
 
 Pixel Forge does exactly that. It walks through your media library in small batches, writes a WebP and/or AVIF copy of every image next to the original, and shows you a live progress bar the whole time. Your originals are never changed. When you want the generated files gone, one click removes every last one of them.
 
+## What makes it different
+
+Image conversion is a crowded space, so here is where Pixel Forge draws its lines:
+
+- **Fully local.** It uses WordPress' own image engine (GD or Imagick). No third-party service, no account, no API key, no per-image credits, and no image data ever leaves your site. Many popular converters route your images through an external API.
+- **Completely reversible.** Originals are never modified or replaced. Every generated file is recorded, so one click removes all of them and leaves you exactly where you started.
+- **Per-image control, not just a bulk run.** A Next-gen column in the Media Library shows each image's status and real savings, with Convert and Remove right on the row. That kind of granular control is usually reserved for a paid tier.
+
 ## Features at a glance
 
 | | Feature | What you get |
 | :---: | --- | --- |
 | 🖼️ | **WebP + AVIF** | Convert to either format or both, whichever your server can create. |
 | 📊 | **Live progress** | Small AJAX batches with a progress bar, running counts, and a log, so big libraries never time out. |
+| 🗂️ | **Media Library column** | A Next-gen column with per-image savings and one-click Convert or Remove on each row. |
+| 🏠 | **Fully local** | No third-party service, no account, no API key. Nothing about an image leaves your site. |
 | 🧱 | **Every size** | The full image and every registered thumbnail size are converted. |
 | 🔒 | **Originals safe** | New files are written alongside originals. Your JPEGs and PNGs are never modified. |
 | ↩ | **One-click rollback** | Delete every generated file in one go. Originals stay exactly as they are. |

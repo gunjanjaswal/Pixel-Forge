@@ -17,6 +17,7 @@ class PixelForge_Converter {
 
 	const DONE_META  = '_pixelforge_done';
 	const FILES_META = '_pixelforge_files';
+	const BYTES_META = '_pixelforge_bytes';
 
 	/**
 	 * Which next-gen formats this server can actually write.
@@ -141,6 +142,27 @@ class PixelForge_Converter {
 		update_post_meta( $attachment_id, self::FILES_META, $recorded );
 		update_post_meta( $attachment_id, self::DONE_META, PIXELFORGE_VERSION );
 
+		// Store totals from disk so the Media Library column always has accurate
+		// savings, even on a re-run where nothing new was written this pass.
+		$totals = array( 'source' => 0, 'webp' => 0, 'avif' => 0 );
+		foreach ( $sources as $source ) {
+			if ( file_exists( $source ) ) {
+				$totals['source'] += (int) filesize( $source );
+			}
+		}
+		foreach ( $recorded as $rel ) {
+			$path = $base . ltrim( (string) $rel, '/' );
+			if ( ! file_exists( $path ) ) {
+				continue;
+			}
+			if ( '.avif' === substr( $path, -5 ) ) {
+				$totals['avif'] += (int) filesize( $path );
+			} elseif ( '.webp' === substr( $path, -5 ) ) {
+				$totals['webp'] += (int) filesize( $path );
+			}
+		}
+		update_post_meta( $attachment_id, self::BYTES_META, $totals );
+
 		return $result;
 	}
 
@@ -166,6 +188,7 @@ class PixelForge_Converter {
 
 		delete_post_meta( $attachment_id, self::FILES_META );
 		delete_post_meta( $attachment_id, self::DONE_META );
+		delete_post_meta( $attachment_id, self::BYTES_META );
 
 		return $removed;
 	}
