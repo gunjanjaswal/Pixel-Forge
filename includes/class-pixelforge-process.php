@@ -209,10 +209,11 @@ class PixelForge_Process {
 	public static function ajax_save_settings() {
 		self::guard();
 
+		// Nonce and capability are verified in guard() above.
 		$raw = array(
-			'formats' => isset( $_POST['formats'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['formats'] ) ) : array(),
-			'quality' => isset( $_POST['quality'] ) ? (int) $_POST['quality'] : 82,
-			'serve'   => isset( $_POST['serve'] ) ? (int) $_POST['serve'] : 0,
+			'formats' => isset( $_POST['formats'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['formats'] ) ) : array(), // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			'quality' => isset( $_POST['quality'] ) ? (int) $_POST['quality'] : 82, // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			'serve'   => isset( $_POST['serve'] ) ? (int) $_POST['serve'] : 0, // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		);
 
 		$settings = self::sanitize_settings( $raw );
