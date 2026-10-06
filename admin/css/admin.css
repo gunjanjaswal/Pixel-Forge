@@ -1,0 +1,75 @@
+.pixelforge-cards {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	margin: 18px 0 8px;
+}
+
+.pixelforge-card {
+	flex: 1 1 160px;
+	max-width: 220px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 16px 18px;
+	display: flex;
+	flex-direction: column;
+}
+
+.pixelforge-num {
+	font-size: 28px;
+	font-weight: 600;
+	line-height: 1.1;
+	color: #1d2327;
+}
+
+.pixelforge-label {
+	margin-top: 4px;
+	color: #646970;
+	font-size: 13px;
+}
+
+.pixelforge-progress {
+	max-width: 720px;
+	height: 18px;
+	background: #f0f0f1;
+	border: 1px solid #dcdcde;
+	border-radius: 10px;
+	overflow: hidden;
+	margin: 6px 0 10px;
+}
+
+.pixelforge-bar {
+	height: 100%;
+	width: 0;
+	background: linear-gradient( 90deg, #f7a62e, #ef8f1c );
+	transition: width 0.25s ease;
+}
+
+.pixelforge-status {
+	font-weight: 500;
+	min-height: 1.4em;
+	margin: 4px 0;
+}
+
+.pixelforge-log {
+	max-width: 720px;
+	max-height: 220px;
+	overflow-y: auto;
+	font-size: 12px;
+	color: #50575e;
+}
+
+.pixelforge-log div {
+	padding: 2px 0;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.pixelforge-log .pf-err {
+	color: #b32d2e;
+}
+
+.pixelforge-inline-msg {
+	margin-left: 10px;
+	color: #1a7a34;
+}
