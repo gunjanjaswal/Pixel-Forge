@@ -328,7 +328,7 @@ class PixelForge_Admin {
 				printf(
 					/* translators: 1: website link, 2: Ko-fi support link, 3: developer contact email link. */
 					esc_html__( 'Built by Gunjan Jaswal at %1$s. Enjoying Pixel Forge? %2$s, or %3$s.', 'pixel-forge' ),
-					'<a href="' . esc_url( 'https://www.gunjanjaswal.me' ) . '" target="_blank" rel="noopener noreferrer">gunjanjaswal.me</a>',
+					'<a href="' . esc_url( 'https://gunjanjaswal.me' ) . '" target="_blank" rel="noopener noreferrer">gunjanjaswal.me</a>',
 					'<a href="' . esc_url( 'https://ko-fi.com/gunjanjaswal' ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'buy me a coffee on Ko-fi', 'pixel-forge' ) . '</a>',
 					'<a href="' . esc_url( 'mailto:hello@gunjanjaswal.me' ) . '">' . esc_html__( 'contact the developer', 'pixel-forge' ) . '</a>'
 				);
@@ -354,7 +354,7 @@ class PixelForge_Admin {
 
 		$links[] = sprintf(
 			'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
-			esc_url( 'https://www.gunjanjaswal.me' ),
+			esc_url( 'https://gunjanjaswal.me' ),
 			esc_html__( 'Website', 'pixel-forge' )
 		);
 		$links[] = sprintf(
