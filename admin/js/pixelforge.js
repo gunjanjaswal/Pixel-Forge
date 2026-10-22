@@ -149,7 +149,8 @@
 		request( 'pixelforge_save_settings', {
 			formats: selectedFormats(),
 			quality: $( 'pf-quality' ).value,
-			serve: $( 'pf-serve' ).checked ? 1 : 0
+			serve: $( 'pf-serve' ).checked ? 1 : 0,
+			auto: $( 'pf-auto' ) && $( 'pf-auto' ).checked ? 1 : 0
 		} ).then( function ( res ) {
 			msg.textContent = res && res.success ? cfg.i18n.saved : cfg.i18n.errorNo;
 			setTimeout( function () {

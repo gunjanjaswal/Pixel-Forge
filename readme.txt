@@ -5,7 +5,7 @@ Tags: webp, avif, images, performance, optimization
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,6 +77,9 @@ Open Media > Pixel Forge and use the Rollback section. It deletes every file the
 1. The Pixel Forge screen: status cards, settings, and the conversion progress bar.
 
 == Changelog ==
+
+= 1.1.0 =
+* New: "Convert new uploads" option. With it on, every image you upload is converted to your chosen formats automatically, so you no longer have to run a bulk conversion after adding images. Off by default, and it uses the same formats and quality as the bulk tool.
 
 = 1.0.0 =
 * First release: fully local bulk WebP and AVIF conversion with a batched progress screen, a Media Library column with per-image Convert/Remove, quality control, optional `<picture>` serving, and one-click rollback.

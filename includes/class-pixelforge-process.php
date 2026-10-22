@@ -24,6 +24,43 @@ class PixelForge_Process {
 		add_action( 'wp_ajax_pixelforge_rollback_batch', array( __CLASS__, 'ajax_rollback_batch' ) );
 		add_action( 'wp_ajax_pixelforge_convert_one', array( __CLASS__, 'ajax_convert_one' ) );
 		add_action( 'wp_ajax_pixelforge_remove_one', array( __CLASS__, 'ajax_remove_one' ) );
+
+		// Auto-convert freshly uploaded images, when enabled.
+		add_filter( 'wp_generate_attachment_metadata', array( __CLASS__, 'maybe_convert_on_upload' ), 20, 2 );
+	}
+
+	/**
+	 * Convert a newly uploaded image to the chosen formats, if auto-convert is on.
+	 *
+	 * @param array $metadata      Attachment metadata.
+	 * @param int   $attachment_id Attachment ID.
+	 * @return array The (unchanged) metadata.
+	 */
+	public static function maybe_convert_on_upload( $metadata, $attachment_id ) {
+		$settings = self::get_settings();
+		if ( empty( $settings['auto'] ) || empty( $settings['formats'] ) ) {
+			return $metadata;
+		}
+
+		$mime = get_post_mime_type( $attachment_id );
+		if ( ! in_array( $mime, self::source_mimes(), true ) ) {
+			return $metadata;
+		}
+
+		if ( get_post_meta( $attachment_id, PixelForge_Converter::DONE_META, true ) ) {
+			return $metadata;
+		}
+
+		$res   = PixelForge_Converter::convert_attachment( $attachment_id, $settings['formats'], $settings['quality'] );
+		$stats = self::get_stats();
+		$stats['images']       += 1;
+		$stats['files']        += count( $res['created'] );
+		$stats['bytes_source'] += $res['bytes_source'];
+		$stats['bytes_webp']   += $res['bytes_webp'];
+		$stats['bytes_avif']   += $res['bytes_avif'];
+		update_option( self::STATS, $stats );
+
+		return $metadata;
 	}
 
 	/**
@@ -52,6 +89,7 @@ class PixelForge_Process {
 			'formats' => $formats,
 			'quality' => 82,
 			'serve'   => 0,
+			'auto'    => 0,
 		);
 	}
 
@@ -93,6 +131,7 @@ class PixelForge_Process {
 			'formats' => $formats,
 			'quality' => $quality,
 			'serve'   => empty( $raw['serve'] ) ? 0 : 1,
+			'auto'    => empty( $raw['auto'] ) ? 0 : 1,
 		);
 	}
 
@@ -216,6 +255,7 @@ class PixelForge_Process {
 			'formats' => isset( $_POST['formats'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['formats'] ) ) : array(), // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			'quality' => isset( $_POST['quality'] ) ? (int) $_POST['quality'] : 82, // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			'serve'   => isset( $_POST['serve'] ) ? (int) $_POST['serve'] : 0, // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			'auto'    => isset( $_POST['auto'] ) ? (int) $_POST['auto'] : 0, // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		);
 
 		$settings = self::sanitize_settings( $raw );

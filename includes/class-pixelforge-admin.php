@@ -298,6 +298,15 @@ class PixelForge_Admin {
 						</label>
 					</td>
 				</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Convert new uploads', 'pixel-forge' ); ?></th>
+						<td>
+							<label>
+								<input type="checkbox" id="pf-auto" value="1" <?php checked( ! empty( $settings['auto'] ) ); ?> />
+								<?php esc_html_e( 'Automatically convert images to the chosen formats as they are uploaded, so you do not have to run a bulk conversion each time.', 'pixel-forge' ); ?>
+							</label>
+						</td>
+					</tr>
 			</table>
 			<p>
 				<button type="button" class="button" id="pf-save"><?php esc_html_e( 'Save settings', 'pixel-forge' ); ?></button>
