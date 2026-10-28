@@ -3,7 +3,7 @@
  * Plugin Name:       Pixel Forge
  * Plugin URI:        https://github.com/gunjanjaswal/Pixel-Forge
  * Description:       Bulk-convert your media library to WebP and AVIF with a live progress screen, then serve the next-gen files with a one-click rollback whenever you want the originals back.
- * Version:           1.1.0
+ * Version:           1.1.1
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Author:            Gunjan Jaswal
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PIXELFORGE_VERSION', '1.1.0' );
+define( 'PIXELFORGE_VERSION', '1.1.1' );
 define( 'PIXELFORGE_FILE', __FILE__ );
 define( 'PIXELFORGE_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PIXELFORGE_URL', plugin_dir_url( __FILE__ ) );
