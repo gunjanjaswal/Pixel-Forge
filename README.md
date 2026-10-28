@@ -12,9 +12,9 @@
 <p align="center">
   <img src="https://img.shields.io/badge/WordPress-6.5%2B-21759B?logo=wordpress&logoColor=white" alt="WordPress 6.5+">
   <img src="https://img.shields.io/badge/PHP-7.4%2B-777BB4?logo=php&logoColor=white" alt="PHP 7.4+">
-  <img src="https://img.shields.io/badge/Tested%20up%20to-7.1-21759B?logo=wordpress&logoColor=white" alt="Tested up to 7.1">
+  <img src="https://img.shields.io/badge/Tested%20up%20to-7.1.4-21759B?logo=wordpress&logoColor=white" alt="Tested up to 7.1.4">
   <img src="https://img.shields.io/badge/License-GPLv2%2B-3DA639?logo=gnu&logoColor=white" alt="License GPLv2+">
-  <img src="https://img.shields.io/badge/version-1.0.0-8b5cf6" alt="Version 1.0.0">
+  <img src="https://img.shields.io/badge/version-1.1.1-8b5cf6" alt="Version 1.1.1">
 </p>
 
 <p align="center">
@@ -197,6 +197,17 @@ Serving rewrites standard `<img>` tags in content, featured images, and attachme
 ## Contributing
 
 Issues and pull requests are welcome at [github.com/gunjanjaswal/Pixel-Forge](https://github.com/gunjanjaswal/Pixel-Forge). A sample image and your settings help a lot when reporting a bug.
+
+## Changelog
+
+### 1.1.1
+- Tested and confirmed compatible with WordPress 7.1.4.
+
+### 1.1.0
+- New: "Convert new uploads" option. With it on, every image you upload is converted to your chosen formats automatically, so you no longer have to run a bulk conversion after adding images. Off by default, and it uses the same formats and quality as the bulk tool.
+
+### 1.0.0
+- First release: fully local bulk WebP and AVIF conversion with a batched progress screen, a Media Library column with per-image Convert/Remove, quality control, optional `<picture>` serving, and one-click rollback.
 
 ## Support
 
