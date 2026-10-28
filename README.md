@@ -200,6 +200,8 @@ Issues and pull requests are welcome at [github.com/gunjanjaswal/Pixel-Forge](ht
 
 ## Changelog
 
+The full changelog lives in [`readme.txt`](readme.txt). Recent releases:
+
 ### 1.1.1
 - Tested and confirmed compatible with WordPress 7.1.4.
 
